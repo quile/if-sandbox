@@ -1,0 +1,33 @@
+#!/bin/sh
+#________________________________________
+#
+#
+
+pkgPath=$1; shift
+
+unrollTool=
+unrollArgs=
+
+case $pkgPath in
+
+    *.tar.bz2|*.tbz)
+	unrollTool='tar'
+	unrollArgs='zjvf'
+	;;
+
+    *.tar.gz|*.tgz)
+	unrollTool='tar'
+	unrollArgs='zxvf'
+	;;
+
+    *.zip)
+	unrollTool='zip'
+	;;
+
+    *)
+        echo "$pkgPath: Unable to recognize archive format."; exit 1
+
+esac
+
+$unrollTool $unrollArgs $pkgPath
+

@@ -1,0 +1,74 @@
+#!/usr/bin/env perl
+#________________________________________
+#
+#
+
+#
+#
+#
+
+use Getopt::Long;
+
+#
+#
+#
+
+chomp(my $pwd			= `pwd`);
+my $pkgDir			= "$pwd/packages";
+my $archFmtExpr			= 'tar';
+my $extExpr			= 'bz2|gz|tgz|zip';
+
+#
+#
+#
+
+my $getFile;
+my $getPath;
+my $getVersion;
+my $getPkgspec;
+my $opts			= GetOptions (
+				    'file'	=> \$getFile,
+				    'path'	=> \$getPath,
+				    'version'	=> \$getVersion,
+				    'pkgspec'	=> \$getPkgspec,
+				  );
+
+#
+#
+#
+
+my $pkgName;
+my $pkgRelPath			= $ARGV[0]; shift;
+if ($pkgRelPath =~ m@/@) {
+    $pkgRelPath			=~ m@(.+)/([^/]+)$@;
+    $pkgDir			.= "/$1";
+    $pkgName			= $2;
+} else {
+    $pkgName			= $pkgRelPath;
+}
+my $pkgPath			= <$pkgDir/$pkgName-*>;
+my ($pkgFile)			= $pkgPath =~ m@/([^/]+)$@;
+$pkgFile			=~ /^$pkgName-(.+)\.(($archFmtExpr))?\.($extExpr)$/;
+my $pkgVersion			= $1;
+my $pkgSpec			= "$pkgName-$pkgVersion";
+
+#
+#
+#
+
+my $getParam;
+
+if ($getFile) {
+    $getParam			= $pkgFile;
+} elsif ($getPath) {
+    $getParam			= $pkgPath;
+} elsif ($getVersion) {
+    $getParam			= $pkgVersion;
+} elsif ($getPkgspec) {
+    $getParam			= $pkgSpec;
+}
+
+print "$getParam\n";
+
+
+
