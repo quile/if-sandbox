@@ -1,3 +1,15 @@
+IF SANDBOX
+----------
+
+This will greatly assist getting the IF perl framework
+working under OSX and Linux.  It has been successfully run under
+Snow Leopard, Ubuntu (HH) and Centos.
+
+It contains all the Open Source bits and pieces that you'll 
+need to run IF-based applications, except MySQL; we assume you
+use the system one.
+
+
 Getting the sandbox working for the first time
 ----------------------------------------------
 
@@ -12,7 +24,7 @@ So, the first time you install the sandbox, do this:  (fix up
 your paths accordingly)
 
 sudo /Library/StartupItems/MySQLCOM/MySQLCOM stop
-export IF_SANDBOX=~/LocalProjects/Idealist/i2/sandbox
+export IF_SANDBOX=~/LocalProjects/if-sandbox
 cd $IF_SANDBOX
 make
 
@@ -29,7 +41,7 @@ and you'll be good to go.  Remember to restart MySQL:
 sudo /Library/StartupItems/MySQLCOM/MySQLCOM start
 
 
-NOTE:  In order to use the sandbox with i2 (or ICA), you will also
+NOTE:  In order to use the sandbox you will also
 need to update your conf files to point to the new locations of 
 apache and memcached:
 
