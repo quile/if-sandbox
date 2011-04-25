@@ -47,10 +47,6 @@ MOD_PERL_BUILD_DIR		= $(BUILD_DIR)/$(shell $(PKGINFO) --pkgspec mod_perl)
 MOD_PERL_PKG			= $(shell $(PKGINFO) --path mod_perl)
 MOD_PERL_VERSION		= $(shell $(PKGINFO) --version mod_perl)
 
-XAPIAN_PKG			= $(shell $(PKGINFO) --path xapian-core)
-XAPIAN_PKGSPEC			= $(shell $(PKGINFO) --pkgspec xapian-core)
-XAPIAN_VERSION			= $(shell $(PKGINFO) --version xapian-core)
-
 #
 # Sandbox binary path
 # Sandbox library path
@@ -96,8 +92,8 @@ APACHE_BUILD_ARGUMENTS=--prefix=$(APACHE_BASE_DIR) \
 #
 
 PERL_MODULES= \
-	version-0.7701 \
-	Module-Build-0.34 \
+	version-0.88 \
+	Module-Build-0.3800 \
 	Compress-Raw-Zlib-2.020 \
 	IO-Compress-2.020 \
 	DBI-1.609 \
@@ -122,7 +118,6 @@ PERL_MODULES= \
 	Test-Class-0.31 \
 	Math-BigInt-FastCalc-0.19 \
 	Net-Twitter-Lite-0.06000 \
-	WWW-Shorten-2.03 \
 	Net-SSLeay-1.35 \
 	IO-Socket-SSL-1.31 \
 	Digest-SHA1-2.12 \
@@ -131,14 +126,15 @@ PERL_MODULES= \
 	Class-Data-Inheritable-0.08 \
 	UNIVERSAL-require-0.13 \
 	Net-OAuth-0.19 \
-	Text-Unaccent-1.07
+	Text-Unaccent-1.07 \
+    Params-Validate-0.98
 
 
 #________________________________________
 # Targets
 #
 
-all: checkenv apache perl mod_perl xapian memcached perlmods xapian-perl apreq2 mod_macro
+all: checkenv apache perl mod_perl memcached perlmods apreq2 mod_macro
 
 checkenv:
 	@if test "$$IF_SANDBOX" = ''; then \
@@ -176,12 +172,6 @@ clean:
 perlmods: perl
 	-for d in $(PERL_MODULES); do (cd $(BUILD_DIR) ; tar xvfz $(IF_SANDBOX)/packages/perl/$$d.tar.gz ; cd $$d ; $(PERL_BIN) Makefile.PL PREFIX=$(LOCAL_DIR); make; make test; make install ); done
 
-xapian:
-	cd $(BUILD_DIR) ; \
-	$(EXTRACT) $(XAPIAN_PKG) ; \
-	cd $(BUILD_DIR)/$(XAPIAN_PKGSPEC) ; \
-	./configure --prefix=$(LOCAL_DIR) ; make ; make install
-
 libevent:
 	cd $(BUILD_DIR) ; \
 	$(EXTRACT) $(LIBEVENT_PKG) ; \
@@ -196,9 +186,6 @@ memcached: libevent
 
 # TODO - parameterise these version numbers so they're
 # not hardcoded here:
-xapian-perl: xapian $(PERL_BIN)
-	cd $(BUILD_DIR); tar xvfz $(IF_SANDBOX)/packages/perl/Search-Xapian-1.0.16.0.tar.gz ; cd Search-Xapian-1.0.16.0 ; $(PERL_BIN) Makefile.PL PREFIX=$(LOCAL_DIR) XAPIAN_CONFIG=$(LOCAL_DIR)/bin/xapian-config ; make ; make install
-
 apreq2: $(APACHE_BASE_DIR)
 	PATH=$(LOCAL_DIR)/bin:$(PATH) ; cd $(BUILD_DIR); tar xvfz $(IF_SANDBOX)/packages/perl/libapreq2-2.12.tar.gz ; cd libapreq2-2.12 ; ./configure --enable-perl-glue --with-apache2-apxs=$(LOCAL_DIR)/apache2/bin/apxs --prefix=$(LOCAL_DIR) ; make ; make install
 
